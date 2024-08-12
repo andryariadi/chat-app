@@ -1,5 +1,7 @@
+import "./lists.css";
+
 const Lists = () => {
-  return <div>Lists</div>;
+  return <div className="list">Lists</div>;
 };
 
 export default Lists;
