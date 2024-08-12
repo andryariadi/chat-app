@@ -7,7 +7,7 @@ const UserInfo = () => {
   return (
     <div className="userInfo">
       <div className="user">
-        <img src="./noAvatar.png" alt="Profile" />
+        <img src={"https://i.pinimg.com/236x/3b/51/e0/3b51e0cfb1c0d914da29756b5ed4c4ca.jpg"} alt="Profile" />
         <h2>Andry Ariadi</h2>
       </div>
       <div className="icons">

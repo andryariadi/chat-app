@@ -41,7 +41,7 @@
   .userChatContainer {
     /* background-color: yellowgreen; */
     overflow-y: scroll;
-    max-height: 30.3rem;
+    max-height: 29.8rem;
     border-radius: 10px;
 
     .userChat {
@@ -50,7 +50,7 @@
       align-items: center;
       gap: 1rem;
       padding: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+      border-bottom: 1px solid #dddddd35;
 
       img {
         width: 40px;
@@ -66,6 +66,7 @@
 
         span {
           font-size: 0.9rem;
+          font-weight: 300;
         }
 
         p {

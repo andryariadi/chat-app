@@ -20,7 +20,7 @@ const ChatLists = () => {
       <div className="userChatContainer">
         {[...Array(10)].map((_, i) => (
           <div className="userChat" key={i}>
-            <img src="./noAvatar.png" alt="User" />
+            <img src="https://i.pinimg.com/236x/a5/7a/bc/a57abc03ca6359ff7b15224fa525a96a.jpg" alt="User" />
             <div className="text">
               <span>Tasmiah</span>
               <p>Hello bre...</p>

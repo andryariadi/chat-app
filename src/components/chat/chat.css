@@ -1,4 +1,126 @@
 .chat {
+  /* background-color: brown; */
   flex: 2;
-  background-color: brown;
+  border-left: 1px solid #dddddd35;
+  border-right: 1px solid #dddddd35;
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      img {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        span {
+          font-size: 1rem;
+          font-weight: bold;
+        }
+
+        p {
+          font-size: 0.75rem;
+          color: rgba(255, 255, 255, 0.5);
+        }
+      }
+    }
+
+    .icons {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .icon {
+        cursor: pointer;
+
+        &:hover {
+          color: #bad7ff;
+          transition: all 0.3s ease;
+        }
+      }
+    }
+  }
+
+  .center {
+    border-top: 1px solid #dddddd35;
+    border-bottom: 1px solid #dddddd35;
+    flex: 1;
+  }
+
+  .bottom {
+    /* background-color: aqua; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+
+    .icons {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .icon {
+        cursor: pointer;
+
+        &:hover {
+          color: #bad7ff;
+          transition: all 0.3s ease;
+        }
+      }
+    }
+
+    input {
+      flex: 1;
+      background-color: rgba(17, 25, 40, 0.5);
+      border: none;
+      outline: none;
+      color: azure;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    .emoji {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+
+      .icon {
+        &:hover {
+          color: #bad7ff;
+          transition: all 0.3s ease;
+        }
+      }
+
+      .emojiPicker {
+        position: absolute;
+        right: 0;
+        top: 2.5rem;
+      }
+    }
+
+    button {
+      background-color: #5183fe;
+      border: none;
+      outline: none;
+      padding: 0.6rem 0.8rem;
+      border-radius: 5px;
+      color: azure;
+    }
+  }
 }

@@ -4,10 +4,10 @@ import UserInfo from "./userInfo/UserInfo";
 
 const Lists = () => {
   return (
-    <div className="list">
+    <section className="list">
       <UserInfo />
       <ChatLists />
-    </div>
+    </section>
   );
 };
 
