@@ -2,6 +2,7 @@ import { IoIosEye, IoIosEyeOff, IoIosMail } from "react-icons/io";
 import "./login.css";
 import { useState } from "react";
 import { HiMiniUser } from "react-icons/hi2";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [isPasswordLogin, setIsPasswordLogin] = useState(false);
@@ -22,13 +23,18 @@ const Login = () => {
     }
   };
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    toast.success("Login Successful!");
+  };
+
   console.log(avatar);
 
   return (
     <div className="login">
       <div className="auth">
         <h2>Welcome back..</h2>
-        <form action="">
+        <form onSubmit={handleLogin}>
           <div className="field">
             <input type="text" placeholder="Email" name="email" />
             <IoIosMail size={24} className="icon" />
