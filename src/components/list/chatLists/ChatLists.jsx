@@ -2,6 +2,7 @@ import { BiSearchAlt } from "react-icons/bi";
 import "./chatLists.css";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { useState } from "react";
+import AddUser from "./addUser/AddUser";
 const ChatLists = () => {
   const [open, setOpen] = useState(false);
 
@@ -28,6 +29,7 @@ const ChatLists = () => {
           </div>
         ))}
       </div>
+      {open && <AddUser />}
     </div>
   );
 };
