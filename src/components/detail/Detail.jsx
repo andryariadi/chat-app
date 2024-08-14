@@ -2,12 +2,21 @@ import { MdOutlineKeyboardArrowUp } from "react-icons/md";
 import "./detail.css";
 import { useState } from "react";
 import { HiOutlineDownload } from "react-icons/hi";
+import { LoaderBtn } from "../loading/Loading";
+import { auth } from "../../libs/firebase";
 
 const Detail = () => {
   const [openChatSettings, setOpenChatSettings] = useState(false);
   const [openPrivacyHelp, setOpenPrivacyHelp] = useState(false);
   const [openSharedPhotos, setOpenSharedPhotos] = useState(false);
   const [openSharedFiles, setOpenSharedFiles] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogout = () => {
+    setLoading(true);
+    auth.signOut();
+  };
+
   return (
     <div className="detail">
       <div className="user">
@@ -123,7 +132,9 @@ const Detail = () => {
 
       <div className="buttons">
         <button className="btnUser">Block User</button>
-        <button className="btnAuth">Logout</button>
+        <button className="btnAuth" onClick={handleLogout}>
+          {loading ? <LoaderBtn /> : "Logout"}
+        </button>
       </div>
     </div>
   );
