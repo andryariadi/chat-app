@@ -72,6 +72,11 @@
           background-color: rgba(0, 24, 110, 0.8);
           transition: all 0.3s ease;
         }
+
+        &:disabled {
+          background-color: rgba(0, 24, 110, 0.4);
+          cursor: not-allowed;
+        }
       }
     }
   }

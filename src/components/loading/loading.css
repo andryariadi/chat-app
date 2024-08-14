@@ -1,0 +1,24 @@
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  .loader-btn {
+    width: 20px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 1px;
+    background: conic-gradient(#0000, #ffffff) content-box;
+    mask: repeating-conic-gradient(#0000 0deg, #000 1deg calc(360deg / 12 - 2.5deg - 1deg), #0000 calc(360deg / 12 - 2.5deg) calc(360deg / 12)), radial-gradient(farthest-side, #0000 calc(98% - 3px), #000 calc(100% - 3px));
+    mask-composite: intersect;
+    -webkit-mask-composite: destination-in;
+    animation: spin 950ms infinite steps(12);
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+}
