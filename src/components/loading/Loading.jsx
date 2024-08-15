@@ -4,7 +4,15 @@ export const Loading = () => {
   return (
     <div className="loader">
       {/* <div className="loading"></div> */}
-      <img src="/loading.svg" alt="Loading" />
+      <img src="/load.svg" alt="Loading" />
+    </div>
+  );
+};
+
+export const LoaderComponent = () => {
+  return (
+    <div className="loader">
+      <div className="loading"></div>
     </div>
   );
 };

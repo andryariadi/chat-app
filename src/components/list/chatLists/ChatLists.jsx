@@ -1,11 +1,16 @@
 import { BiSearchAlt } from "react-icons/bi";
 import "./chatLists.css";
 import { LuMinus, LuPlus } from "react-icons/lu";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import AddUser from "./addUser/AddUser";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../../libs/firebase";
 import { useUserStore } from "../../../libs/userStore";
+import { lazy } from "react";
+import { LoaderComponent } from "../../loading/Loading";
+
+const ChatItem = lazy(() => import("./ChatItem"));
+
 const ChatLists = () => {
   const [open, setOpen] = useState(false);
   const [chats, setChats] = useState([]);
@@ -53,15 +58,11 @@ const ChatLists = () => {
 
       <div className="userChatContainer">
         {chats.length > 0 ? (
-          chats.map((chat) => (
-            <div className="userChat" key={chat.id}>
-              <img src="https://i.pinimg.com/236x/a5/7a/bc/a57abc03ca6359ff7b15224fa525a96a.jpg" alt="User" />
-              <div className="text">
-                <span>Tasmiah</span>
-                <p>Hello bre...</p>
-              </div>
-            </div>
-          ))
+          <Suspense fallback={<LoaderComponent />}>
+            {chats.map((chat) => (
+              <ChatItem key={chat.chatId} chat={chat} />
+            ))}
+          </Suspense>
         ) : (
           <div className="noChat">No chat available</div>
         )}
