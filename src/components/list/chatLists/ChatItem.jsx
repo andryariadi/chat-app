@@ -1,8 +1,14 @@
 import PropTypes from "prop-types";
+import { useChatStore } from "../../../libs/chatStore";
 
 const ChatItem = ({ chat }) => {
+  const { changeChat } = useChatStore();
+
+  const handleSelect = (chat) => {
+    changeChat(chat.chatId, chat.user);
+  };
   return (
-    <div className="userChat">
+    <div className="userChat" onClick={() => handleSelect(chat)}>
       <img src={chat.user.avatar || "/noAvatar.png"} alt="User" />
       <div className="text">
         <span>{chat.user.username}</span>

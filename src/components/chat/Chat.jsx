@@ -7,15 +7,28 @@ import { FaMicrophoneAlt } from "react-icons/fa";
 import { BsEmojiWinkFill } from "react-icons/bs";
 import EmojiPicker from "emoji-picker-react";
 import { useEffect, useRef, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../libs/firebase";
+import { useChatStore } from "../../libs/chatStore";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const endRef = useRef(null);
+  const [chat, setChat] = useState(null);
+  const { chatId } = useChatStore();
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
+
+  useEffect(() => {
+    const onSub = onSnapshot(doc(db, "chats", chatId), (res) => {
+      setChat(res.data());
+    });
+
+    return () => onSub();
+  }, [chatId]);
 
   const handleEmoji = (e) => {
     console.log(e);
@@ -23,7 +36,7 @@ const Chat = () => {
     setOpen(!open);
   };
 
-  console.log(text, endRef);
+  console.log(text, chat);
 
   return (
     <section className="chat">
