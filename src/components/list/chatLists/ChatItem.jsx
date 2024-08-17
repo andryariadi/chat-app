@@ -1,14 +1,37 @@
 import PropTypes from "prop-types";
 import { useChatStore } from "../../../libs/chatStore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../libs/firebase";
+import { useUserStore } from "../../../libs/userStore";
 
 const ChatItem = ({ chat }) => {
-  const { changeChat } = useChatStore();
+  const { changeChat, chatId } = useChatStore();
+  const { currentUser } = useUserStore();
 
-  const handleSelect = (chat) => {
+  const handleSelect = async (chat) => {
+    // One way
     changeChat(chat.chatId, chat.user);
+    const userChatsRef = doc(db, "userchats", currentUser.id);
+    const userChatSnapshot = await getDoc(userChatsRef);
+
+    if (userChatSnapshot.exists()) {
+      const userChatsData = userChatSnapshot.data();
+
+      const chatIndex = userChatsData.chats.findIndex((cht) => cht.chatId === chatId);
+
+      userChatsData.chats[chatIndex].isSeen = true;
+      await updateDoc(userChatsRef, {
+        chats: userChatsData.chats,
+      });
+    }
+
+    // Another way
   };
+
+  console.log(chat, "<---dichatitem");
+
   return (
-    <div className="userChat" onClick={() => handleSelect(chat)}>
+    <div className="userChat" style={{ backgroundColor: chat?.isSeen ? "transparent" : "#5183fe" }} onClick={() => handleSelect(chat)}>
       <img src={chat.user.avatar || "/noAvatar.png"} alt="User" />
       <div className="text">
         <span>{chat.user.username}</span>
@@ -27,6 +50,7 @@ ChatItem.propTypes = {
       username: PropTypes.string.isRequired,
     }).isRequired,
     lastMessage: PropTypes.string,
+    isSeen: PropTypes.bool,
   }).isRequired,
 };
 

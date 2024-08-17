@@ -25,6 +25,8 @@ const ChatLists = () => {
 
       const items = res.data()?.chats || [];
 
+      console.log(items, "items");
+
       const promises = items.map(async (item) => {
         const userDocRef = doc(db, "users", item.receiverId);
         const userDocSnap = await getDoc(userDocRef);
@@ -35,6 +37,8 @@ const ChatLists = () => {
       });
 
       const chatData = await Promise.all(promises);
+
+      console.log(chatData, "chatData");
 
       setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
     });
