@@ -32,9 +32,9 @@ const ChatItem = ({ chat }) => {
 
   return (
     <div className="userChat" style={{ backgroundColor: chat?.isSeen ? "transparent" : "#5183fe" }} onClick={() => handleSelect(chat)}>
-      <img src={chat.user.avatar || "/noAvatar.png"} alt="User" />
+      <img src={chat.user.blocked.includes(currentUser.id) ? "/noAvatar.png" : chat.user.avatar || "/noAvatar.png"} alt="User" />
       <div className="text">
-        <span>{chat.user.username}</span>
+        <span>{chat.user.blocked.includes(currentUser.id) ? "Blocked" : chat.user.username}</span>
         <p>{chat.lastMessage || "Say hi to your new friend"}</p>
       </div>
     </div>
@@ -48,6 +48,7 @@ ChatItem.propTypes = {
     user: PropTypes.shape({
       avatar: PropTypes.string,
       username: PropTypes.string.isRequired,
+      blocked: PropTypes.array,
     }).isRequired,
     lastMessage: PropTypes.string,
     isSeen: PropTypes.bool,

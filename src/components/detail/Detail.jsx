@@ -3,7 +3,9 @@ import "./detail.css";
 import { useState } from "react";
 import { HiOutlineDownload } from "react-icons/hi";
 import { LoaderBtn } from "../loading/Loading";
-import { auth } from "../../libs/firebase";
+import { auth, db } from "../../libs/firebase";
+import { useChatStore } from "../../libs/chatStore";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 
 const Detail = () => {
   const [openChatSettings, setOpenChatSettings] = useState(false);
@@ -11,6 +13,24 @@ const Detail = () => {
   const [openSharedPhotos, setOpenSharedPhotos] = useState(false);
   const [openSharedFiles, setOpenSharedFiles] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
+
+  const handleBlock = async () => {
+    if (!user) return;
+
+    const userDocRef = doc(db, "users", user.id);
+
+    try {
+      await updateDoc(userDocRef, {
+        blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
+      });
+
+      changeBlock();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLogout = () => {
     setLoading(true);
@@ -20,9 +40,9 @@ const Detail = () => {
   return (
     <div className="detail">
       <div className="user">
-        <img src="https://i.pinimg.com/236x/a5/7a/bc/a57abc03ca6359ff7b15224fa525a96a.jpg" alt="User" />
+        <img src={user?.avatar || "/noAvatar.png"} alt="User" />
         <div className="texts">
-          <span>Tasmiah</span>
+          <span>{user?.username}</span>
           <p>Wonderfull life...</p>
         </div>
       </div>
@@ -131,7 +151,9 @@ const Detail = () => {
       </div>
 
       <div className="buttons">
-        <button className="btnUser">Block User</button>
+        <button className="btnUser" onClick={handleBlock}>
+          {isCurrentUserBlocked ? "You are block!" : isReceiverBlocked ? "User blocked" : "Block User"}
+        </button>
         <button className="btnAuth" onClick={handleLogout}>
           {loading ? <LoaderBtn /> : "Logout"}
         </button>

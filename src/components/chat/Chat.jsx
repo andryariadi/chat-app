@@ -11,14 +11,23 @@ import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from "firebase/firesto
 import { db } from "../../libs/firebase";
 import { useChatStore } from "../../libs/chatStore";
 import { useUserStore } from "../../libs/userStore";
+import upload from "../../libs/upload";
+import { LoaderBtn } from "../loading/Loading";
+// import { format } from "timeago.js";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const endRef = useRef(null);
+  const [loading, setLoading] = useState(false);
   const [chat, setChat] = useState(null);
-  const { chatId, user } = useChatStore();
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore();
   const { currentUser } = useUserStore();
+
+  const [img, setImg] = useState({
+    file: null,
+    url: "",
+  });
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,15 +47,33 @@ const Chat = () => {
     setOpen(!open);
   };
 
+  const handleImg = (e) => {
+    if (e.target.files[0]) {
+      setImg({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0]),
+      });
+    }
+  };
+
   const handleSendMessage = async () => {
-    if (text === "") return;
+    if (text === "" && !img.file) return;
+
+    setLoading(true);
+
+    let imgUrl = null;
 
     try {
+      if (img.file) {
+        imgUrl = await upload(img.file);
+      }
+
       await updateDoc(doc(db, "chats", chatId), {
         messages: arrayUnion({
           senderId: currentUser.id,
           text,
           createdAt: Date.now(),
+          ...(imgUrl && { img: imgUrl }),
         }),
       });
 
@@ -72,18 +99,26 @@ const Chat = () => {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
+
+    setText("");
+    setImg({
+      file: null,
+      url: "",
+    });
   };
 
-  console.log(text, chat, chatId);
+  console.log(text, chat, chatId, currentUser, user);
 
   return (
     <section className="chat">
       <div className="top">
         <div className="user">
-          <img src="https://i.pinimg.com/236x/a5/7a/bc/a57abc03ca6359ff7b15224fa525a96a.jpg" alt="User" />
+          <img src={user?.avatar || "/noAvatar.png"} alt="User" />
           <div className="text">
-            <span>Tasmiah</span>
+            <span>{user?.username}</span>
             <p>Wonderfull life...</p>
           </div>
         </div>
@@ -96,31 +131,48 @@ const Chat = () => {
 
       <div className="center">
         {chat?.messages?.map((message) => (
-          <div className="message own" key={message.createdAt}>
-            <img src="https://i.pinimg.com/236x/a5/7a/bc/a57abc03ca6359ff7b15224fa525a96a.jpg" alt="User" />
+          <div className={message.senderId === currentUser.id ? "message own" : "message"} key={message.createdAt}>
+            {message.senderId !== currentUser.id && <img src={user?.avatar} alt="Profile" />}
             <div className="texts">
-              {message.img && <img src="https://cdn.pixabay.com/photo/2024/04/25/06/44/ai-generated-8719074_1280.png" alt="Image" />}
-
-              <p>{message.text}</p>
-              <span>{message.createdAt}</span>
+              {message.img && <img src={message.img} alt="Image" />}
+              {message.text && <p>{message.text}</p>}
+              {/* <span>{format(message.createdAt.toDate())}</span> */}
             </div>
           </div>
         ))}
+        {img.url && (
+          <div className="message own">
+            <div className="texts">
+              <img src={img.url} alt="Image" />
+            </div>
+          </div>
+        )}
         <div ref={endRef}></div>
       </div>
 
       <div className="bottom">
         <div className="icons">
-          <IoMdImages size={22} className="icon" />
+          <label htmlFor="file">
+            <IoMdImages size={22} className="icon" />
+          </label>
+          <input type="file" id="file" style={{ display: "none" }} onChange={handleImg} disabled={isCurrentUserBlocked || isReceiverBlocked} />
           <IoCamera size={22} className="icon" />
           <FaMicrophoneAlt size={20} className="icon" />
         </div>
-        <input type="text" placeholder="Type a message..." value={text} onChange={(e) => setText(e.target.value)} />
-        <div className="emoji">
+        <input
+          type="text"
+          placeholder={isCurrentUserBlocked || isReceiverBlocked ? "You cannot send messages" : "Type a message..."}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={isCurrentUserBlocked || isReceiverBlocked}
+        />
+        <div className="emoji" disabled={isCurrentUserBlocked || isReceiverBlocked}>
           <BsEmojiWinkFill size={18} className="icon" onClick={() => setOpen(!open)} />
           <EmojiPicker open={open} className="emojiPicker" theme="dark" onEmojiClick={handleEmoji} />
         </div>
-        <button onClick={handleSendMessage}>Send</button>
+        <button onClick={handleSendMessage} disabled={isCurrentUserBlocked || isReceiverBlocked}>
+          {loading ? <LoaderBtn /> : "Send"}
+        </button>
       </div>
     </section>
   );

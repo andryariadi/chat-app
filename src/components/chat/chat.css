@@ -149,6 +149,10 @@
       color: azure;
       padding: 1rem;
       border-radius: 10px;
+
+      &:disabled {
+        cursor: not-allowed;
+      }
     }
 
     .emoji {
@@ -156,6 +160,10 @@
       align-items: center;
       cursor: pointer;
       position: relative;
+
+      &:disabled {
+        cursor: not-allowed;
+      }
 
       .icon {
         &:hover {
@@ -178,6 +186,11 @@
       padding: 0.6rem 0.8rem;
       border-radius: 5px;
       color: azure;
+
+      &:disabled {
+        background-color: #5182feb5;
+        cursor: not-allowed;
+      }
     }
   }
 }
