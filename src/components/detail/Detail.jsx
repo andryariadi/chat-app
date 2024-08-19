@@ -1,11 +1,11 @@
 import { MdOutlineKeyboardArrowUp } from "react-icons/md";
 import "./detail.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlineDownload } from "react-icons/hi";
 import { LoaderBtn } from "../loading/Loading";
 import { auth, db } from "../../libs/firebase";
 import { useChatStore } from "../../libs/chatStore";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
 
 const Detail = () => {
   const [openChatSettings, setOpenChatSettings] = useState(false);
@@ -13,8 +13,17 @@ const Detail = () => {
   const [openSharedPhotos, setOpenSharedPhotos] = useState(false);
   const [openSharedFiles, setOpenSharedFiles] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [chat, setChat] = useState(null);
 
-  const { user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
+
+  useEffect(() => {
+    const onSub = onSnapshot(doc(db, "chats", chatId), (res) => {
+      setChat(res.data());
+    });
+
+    return () => onSub();
+  }, [chatId]);
 
   const handleBlock = async () => {
     if (!user) return;
@@ -36,6 +45,8 @@ const Detail = () => {
     setLoading(true);
     auth.signOut();
   };
+
+  console.log(chat, "<----didetail");
 
   return (
     <div className="detail">
@@ -91,37 +102,18 @@ const Detail = () => {
               }}
             />
           </div>
-          {openSharedPhotos && (
-            <>
-              <div className="photos">
+          {openSharedPhotos &&
+            chat.messages.map((message) => (
+              <div className="photos" key={message.createdAt}>
                 <div className="photoItem">
-                  <img src="https://cdn.pixabay.com/photo/2024/04/25/06/44/ai-generated-8719074_1280.png" alt="Image" />
+                  <img src={message.img} alt="Image" />
                   <span>photo_2024_13</span>
                 </div>
                 <div className="icon">
                   <HiOutlineDownload size={20} />
                 </div>
               </div>
-              <div className="photos">
-                <div className="photoItem">
-                  <img src="https://cdn.pixabay.com/photo/2024/04/25/06/44/ai-generated-8719074_1280.png" alt="Image" />
-                  <span>photo_2024_13</span>
-                </div>
-                <div className="icon">
-                  <HiOutlineDownload size={20} />
-                </div>
-              </div>
-              <div className="photos">
-                <div className="photoItem">
-                  <img src="https://cdn.pixabay.com/photo/2024/04/25/06/44/ai-generated-8719074_1280.png" alt="Image" />
-                  <span>photo_2024_13</span>
-                </div>
-                <div className="icon">
-                  <HiOutlineDownload size={20} />
-                </div>
-              </div>
-            </>
-          )}
+            ))}
         </div>
         <div className="option">
           <div className="title">
