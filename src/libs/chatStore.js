@@ -44,4 +44,13 @@ export const useChatStore = create((set) => ({
       isReceiverBlocked: !state.isReceiverBlocked,
     }));
   },
+
+  resetChat: () => {
+    set({
+      chatId: null,
+      user: null,
+      isCurrentUserBlocked: false,
+      isReceiverBlocked: false,
+    });
+  },
 }));

@@ -13,7 +13,7 @@ import { useChatStore } from "../../libs/chatStore";
 import { useUserStore } from "../../libs/userStore";
 import upload from "../../libs/upload";
 import { LoaderBtn } from "../loading/Loading";
-// import { format } from "timeago.js";
+import { format } from "timeago.js";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
@@ -136,7 +136,7 @@ const Chat = () => {
             <div className="texts">
               {message.img && <img src={message.img} alt="Image" />}
               {message.text && <p>{message.text}</p>}
-              {/* <span>{format(message.createdAt.toDate())}</span> */}
+              <span>{format(message.createdAt)}</span>
             </div>
           </div>
         ))}

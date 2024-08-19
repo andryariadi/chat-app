@@ -14,6 +14,7 @@ const ChatItem = lazy(() => import("./ChatItem"));
 const ChatLists = () => {
   const [open, setOpen] = useState(false);
   const [chats, setChats] = useState([]);
+  const [inputSearch, setInputSearch] = useState("");
 
   const { currentUser } = useUserStore();
 
@@ -46,14 +47,18 @@ const ChatLists = () => {
     return () => unSub();
   }, [currentUser.id]);
 
-  console.log(chats);
+  const filteredChats = chats.filter((chat) => {
+    return chat.user.username.includes(inputSearch);
+  });
+
+  console.log(chats, filteredChats);
 
   return (
     <div className="chatLists">
       <div className="search">
         <div className="searchBar">
           <BiSearchAlt size={24} />
-          <input type="text" placeholder="Search..." />
+          <input type="text" placeholder="Search..." onChange={(e) => setInputSearch(e.target.value)} />
         </div>
         <div className="icon" onClick={() => setOpen(!open)}>
           {open ? <LuMinus size={24} /> : <LuPlus size={24} />}
@@ -61,9 +66,9 @@ const ChatLists = () => {
       </div>
 
       <div className="userChatContainer">
-        {chats.length > 0 ? (
+        {filteredChats.length > 0 ? (
           <Suspense fallback={<LoaderComponent />}>
-            {chats.map((chat) => (
+            {filteredChats.map((chat) => (
               <ChatItem key={chat.chatId} chat={chat} />
             ))}
           </Suspense>

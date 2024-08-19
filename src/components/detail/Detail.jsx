@@ -15,7 +15,7 @@ const Detail = () => {
   const [loading, setLoading] = useState(false);
   const [chat, setChat] = useState(null);
 
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat } = useChatStore();
 
   useEffect(() => {
     const onSub = onSnapshot(doc(db, "chats", chatId), (res) => {
@@ -44,6 +44,7 @@ const Detail = () => {
   const handleLogout = () => {
     setLoading(true);
     auth.signOut();
+    resetChat();
   };
 
   console.log(chat, "<----didetail");
