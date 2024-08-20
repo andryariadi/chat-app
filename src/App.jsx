@@ -25,7 +25,7 @@ function App() {
 
   if (isLoading) return <Loading />;
 
-  console.log(currentUser, "<----dihome2");
+  console.log(currentUser, chatId, "<----dihome2");
 
   return (
     <>

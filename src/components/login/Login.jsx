@@ -23,8 +23,18 @@ const Login = () => {
     url: "",
   });
 
+  const [registerData, setRegisterData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
   const handleAvatar = (e) => {
-    console.log(e.target.files[0], "<---dilogin");
     if (e.target.files[0]) {
       setAvatar({
         file: e.target.files[0],
@@ -33,13 +43,25 @@ const Login = () => {
     }
   };
 
+  const handleInputChange = (e) => {
+    setRegisterData({
+      ...registerData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleLoginInputChange = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoadingRegister(true);
 
-    const formData = new FormData(e.target);
-
-    const { username, email, password } = Object.fromEntries(formData);
+    const { username, email, password } = registerData;
 
     // VALIDATE INPUTS
     if (!username || !email || !password) return toast.warn("Please enter inputs!");
@@ -71,6 +93,17 @@ const Login = () => {
       });
 
       toast.success("Account created successfully! You can login now!");
+
+      // RESET INPUT FIELDS
+      setRegisterData({
+        username: "",
+        email: "",
+        password: "",
+      });
+      setAvatar({
+        file: null,
+        url: "",
+      });
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -83,14 +116,18 @@ const Login = () => {
     e.preventDefault();
     setLoadingLogin(true);
 
-    const formData = new FormData(e.target);
-
-    const { email, password } = Object.fromEntries(formData);
+    const { email, password } = loginData;
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Login successfully!");
       fetchUserinfo(auth.currentUser.uid);
+
+      // Reset login form
+      setLoginData({
+        email: "",
+        password: "",
+      });
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -105,14 +142,14 @@ const Login = () => {
         <h2>Welcome back..</h2>
         <form onSubmit={handleLogin}>
           <div className="field">
-            <input type="text" placeholder="Email" name="email" />
+            <input type="text" placeholder="Email" name="email" value={loginData.email} onChange={handleLoginInputChange} />
             <IoIosMail size={24} className="icon" />
           </div>
           <div className="field">
-            <input type={isPasswordLogin ? "text" : "password"} placeholder="Password..." name="password" />
+            <input type={isPasswordLogin ? "text" : "password"} placeholder="Password..." name="password" value={loginData.password} onChange={handleLoginInputChange} />
             {isPasswordLogin ? <IoIosEyeOff size={24} className="icon eye" onClick={() => setIsPasswordLogin(!isPasswordLogin)} /> : <IoIosEye size={24} className="icon eye" onClick={() => setIsPasswordLogin(!isPasswordLogin)} />}
           </div>
-          <button disabled={loadingLogin}>{loadingLogin ? <LoaderBtn /> : "Sing In"}</button>
+          <button disabled={loadingLogin}>{loadingLogin ? <LoaderBtn /> : "Sign In"}</button>
         </form>
       </div>
 
@@ -128,15 +165,15 @@ const Login = () => {
           <input type="file" id="file" style={{ display: "none" }} onChange={handleAvatar} />
 
           <div className="field">
-            <input type="text" placeholder="Username" name="username" />
+            <input type="text" placeholder="Username" name="username" value={registerData.username} onChange={handleInputChange} />
             <HiMiniUser size={24} className="icon" />
           </div>
           <div className="field">
-            <input type="text" placeholder="Email" name="email" />
+            <input type="text" placeholder="Email" name="email" value={registerData.email} onChange={handleInputChange} />
             <IoIosMail size={24} className="icon" />
           </div>
           <div className="field">
-            <input type={isPasswordRegister ? "text" : "password"} placeholder="Password..." name="password" />
+            <input type={isPasswordRegister ? "text" : "password"} placeholder="Password..." name="password" value={registerData.password} onChange={handleInputChange} />
             {isPasswordRegister ? (
               <IoIosEyeOff size={24} className="icon eye" onClick={() => setIsPasswordRegister(!isPasswordRegister)} />
             ) : (
