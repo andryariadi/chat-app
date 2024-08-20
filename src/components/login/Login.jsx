@@ -8,12 +8,15 @@ import { auth, db } from "../../libs/firebase";
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import upload from "../../libs/upload";
 import { LoaderBtn } from "../loading/Loading";
+import { useUserStore } from "../../libs/userStore";
 
 const Login = () => {
   const [isPasswordLogin, setIsPasswordLogin] = useState(false);
   const [isPasswordRegister, setIsPasswordRegister] = useState(false);
   const [loadingRegister, setLoadingRegister] = useState(false);
   const [loadingLogin, setLoadingLogin] = useState(false);
+
+  const { fetchUserinfo } = useUserStore();
 
   const [avatar, setAvatar] = useState({
     file: null,
@@ -87,6 +90,7 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Login successfully!");
+      fetchUserinfo(auth.currentUser.uid);
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -94,8 +98,6 @@ const Login = () => {
       setLoadingLogin(false);
     }
   };
-
-  console.log(avatar);
 
   return (
     <div className="login">
@@ -108,7 +110,7 @@ const Login = () => {
           </div>
           <div className="field">
             <input type={isPasswordLogin ? "text" : "password"} placeholder="Password..." name="password" />
-            {isPasswordLogin ? <IoIosEyeOff size={24} className="icon" onClick={() => setIsPasswordLogin(!isPasswordLogin)} /> : <IoIosEye size={24} className="icon" onClick={() => setIsPasswordLogin(!isPasswordLogin)} />}
+            {isPasswordLogin ? <IoIosEyeOff size={24} className="icon eye" onClick={() => setIsPasswordLogin(!isPasswordLogin)} /> : <IoIosEye size={24} className="icon eye" onClick={() => setIsPasswordLogin(!isPasswordLogin)} />}
           </div>
           <button disabled={loadingLogin}>{loadingLogin ? <LoaderBtn /> : "Sing In"}</button>
         </form>
@@ -135,7 +137,11 @@ const Login = () => {
           </div>
           <div className="field">
             <input type={isPasswordRegister ? "text" : "password"} placeholder="Password..." name="password" />
-            {isPasswordRegister ? <IoIosEyeOff size={24} className="icon" onClick={() => setIsPasswordRegister(!isPasswordRegister)} /> : <IoIosEye size={24} className="icon" onClick={() => setIsPasswordRegister(!isPasswordRegister)} />}
+            {isPasswordRegister ? (
+              <IoIosEyeOff size={24} className="icon eye" onClick={() => setIsPasswordRegister(!isPasswordRegister)} />
+            ) : (
+              <IoIosEye size={24} className="icon eye" onClick={() => setIsPasswordRegister(!isPasswordRegister)} />
+            )}
           </div>
           <button disabled={loadingRegister}>{loadingRegister ? <LoaderBtn /> : "Sign Up"}</button>
         </form>
