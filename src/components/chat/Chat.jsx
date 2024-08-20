@@ -2,7 +2,7 @@ import { ImPhone } from "react-icons/im";
 import "./chat.css";
 import { IoCamera, IoVideocam } from "react-icons/io5";
 import { TbInfoCircleFilled } from "react-icons/tb";
-import { IoMdImages } from "react-icons/io";
+import { IoIosSend, IoMdImages } from "react-icons/io";
 import { FaMicrophoneAlt } from "react-icons/fa";
 import { BsEmojiWinkFill } from "react-icons/bs";
 import EmojiPicker from "emoji-picker-react";
@@ -31,7 +31,7 @@ const Chat = () => {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  }, [chat]);
 
   useEffect(() => {
     const onSub = onSnapshot(doc(db, "chats", chatId), (res) => {
@@ -171,7 +171,7 @@ const Chat = () => {
           <EmojiPicker open={open} className="emojiPicker" theme="dark" onEmojiClick={handleEmoji} />
         </div>
         <button onClick={handleSendMessage} disabled={isCurrentUserBlocked || isReceiverBlocked}>
-          {loading ? <LoaderBtn /> : "Send"}
+          {loading ? <LoaderBtn /> : <IoIosSend size={24} />}
         </button>
       </div>
     </section>
